@@ -15,6 +15,41 @@ Because Pi deserves a little tropical vacation, too.
 - 🎨 A fresh, modern terminal aesthetic
 - 👀 Easy on the eyes, even during long coding sessions
 - 🍍 All the Pi, none of the ugliness
+- 🌙 Dark mode first (`pina-dark`)
+
+## Install
+
+From a local checkout:
+
+```bash
+pi install ./pi-theme-pina
+```
+
+Or copy the theme by hand:
+
+```bash
+make install   # copies themes/*.json to ~/.pi/agent/themes
+```
+
+## Usage
+
+Open `/settings` in Pi and select **Theme** → `pina-dark`, or set it directly:
+
+```json
+{
+  "theme": "pina-dark"
+}
+```
+
+## Development
+
+```bash
+make link      # symlink themes into ~/.pi/agent/themes, edit + /reload in Pi
+make validate  # validate theme files against Pi's theme schema
+make help      # list all targets
+```
+
+Every color is specified and measured in [DESIGN.md](DESIGN.md). Theme JSON must match it.
 
 ## License
 

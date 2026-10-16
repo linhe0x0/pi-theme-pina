@@ -1,0 +1,29 @@
+{
+  "name": "pi-theme-pina",
+  "version": "0.1.0",
+  "description": "Piña — a calm, layered dark theme for the Pi coding agent TUI",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-theme",
+    "theme"
+  ],
+  "files": [
+    "themes",
+    "DESIGN.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "themes": [
+      "themes/*.json"
+    ]
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "~1.3.0"
+  }
+}
