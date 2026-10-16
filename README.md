@@ -57,10 +57,14 @@ pi -e ./extensions/pina-editor.ts
 ## Development
 
 ```bash
-make link      # symlink themes into ~/.pi/agent/themes, edit + /reload in Pi
+make dev       # register this repo as a pi package: themes + editor extension, live
 make validate  # validate theme files against Pi's theme schema
 make help      # list all targets
 ```
+
+`make dev` and `make install`/`make link` are mutually exclusive: the package
+already loads `pina-dark`, so a second copy in `~/.pi/agent/themes` collides by
+name. `make dev` removes theme copies first; `make undev` unregisters.
 
 Every color is specified and measured in [DESIGN.md](DESIGN.md). Theme JSON must match it.
 
