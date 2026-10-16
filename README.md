@@ -2,7 +2,8 @@
 
 **Pi Agent, but make it pretty.**
 
-A fresh coat of paint for [Pi](https://pi.dev/). Clean, polished, and easy on the eyes.
+A TUI experience package for [Pi](https://pi.dev/): a polished color system plus UI
+extensions that reshape the interface itself.
 
 Less eyesore. More eye candy. Same Pi.
 
@@ -10,25 +11,19 @@ Less eyesore. More eye candy. Same Pi.
 
 Because Pi deserves a little tropical vacation, too.
 
-## Features
+## What's inside
 
-- 🎨 A fresh, modern terminal aesthetic
-- 👀 Easy on the eyes, even during long coding sessions
-- 🍍 All the Pi, none of the ugliness
-- 🌙 Dark mode first (`pina-dark`)
+- 🎨 `pina-dark` — a calm, layered dark theme; every color specified and measured
+  in [DESIGN.md](DESIGN.md)
+- 🧩 UI extensions that customize the TUI chrome, loaded through a single extension
+  entry — disable it in `pi config` to keep the colors only
 
 ## Install
 
-From a local checkout:
-
 ```bash
-pi install ./pi-theme-pina
-```
-
-Or copy the theme by hand:
-
-```bash
-make install   # copies themes/*.json to ~/.pi/agent/themes
+pi install npm:pi-theme-pina   # npm
+pi install git:github.com/linhe0x0/pi-theme-pina   # git
+pi install ./pi-theme-pina     # local checkout
 ```
 
 ## Usage
@@ -41,32 +36,15 @@ Open `/settings` in Pi and select **Theme** → `pina-dark`, or set it directly:
 }
 ```
 
-## Input editor
-
-The package ships an extension that restyles the input editor: a left accent
-bar, a panel background, and extra padding. It loads automatically when the
-package is installed with `pi install` (themes alone via `make install` do not
-include it).
-
-To try it for one session:
-
-```bash
-pi -e ./extensions/pina-editor.ts
-```
+Extensions shipped by the package load automatically.
 
 ## Development
 
 ```bash
-make dev       # register this repo as a pi package: themes + editor extension, live
-make validate  # validate theme files against Pi's theme schema
+make dev       # register this repo as a pi package: themes + extensions, live
+make check     # theme schema validation + typecheck
 make help      # list all targets
 ```
-
-`make dev` and `make install`/`make link` are mutually exclusive: the package
-already loads `pina-dark`, so a second copy in `~/.pi/agent/themes` collides by
-name. `make dev` removes theme copies first; `make undev` unregisters.
-
-Every color is specified and measured in [DESIGN.md](DESIGN.md). Theme JSON must match it.
 
 ## License
 

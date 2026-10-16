@@ -1,7 +1,8 @@
 /**
- * Piña editor treatment: panel background, left accent bar, extra padding.
+ * Input editor restyling: panel background, left accent bar, extra padding.
  *
- * Replaces the default input editor via ctx.ui.setEditorComponent(). Structure:
+ * Extends CustomEditor, the pi-recommended base for replacing the main editor
+ * (preserves application shortcuts and agent controls). Structure:
  * - One accent-colored bar on the left edge. Colored through this.borderColor so
  *   bash mode recolors it exactly like the stock border does.
  * - Panel background from the theme's selectedBg token on every row.
@@ -10,7 +11,7 @@
  * - The top/bottom rules are suppressed unless they carry information (working
  *   status, scroll indicator), which CustomEditor.renderTopBorder embeds.
  */
-import { CustomEditor, type ExtensionAPI, type KeybindingsManager, type Theme } from "@earendil-works/pi-coding-agent";
+import { CustomEditor, type KeybindingsManager, type Theme } from "@earendil-works/pi-coding-agent";
 import { stripTerminalSequences, visibleWidth, type TUI, type TuiMouseEvent } from "@earendil-works/pi-tui";
 
 const PAD_X = 2;
@@ -67,10 +68,3 @@ class PinaEditor extends CustomEditor {
 }
 
 export { PinaEditor };
-
-export default function (pi: ExtensionAPI) {
-	pi.on("session_start", (_event, ctx) => {
-		if (ctx.mode !== "tui") return;
-		ctx.ui.setEditorComponent((tui, theme, keybindings) => new PinaEditor(tui, theme, keybindings, () => ctx.ui.theme));
-	});
-}
