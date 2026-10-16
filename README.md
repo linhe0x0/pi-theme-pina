@@ -41,6 +41,19 @@ Open `/settings` in Pi and select **Theme** → `pina-dark`, or set it directly:
 }
 ```
 
+## Input editor
+
+The package ships an extension that restyles the input editor: a left accent
+bar, a panel background, and extra padding. It loads automatically when the
+package is installed with `pi install` (themes alone via `make install` do not
+include it).
+
+To try it for one session:
+
+```bash
+pi -e ./extensions/pina-editor.ts
+```
+
 ## Development
 
 ```bash

@@ -117,6 +117,18 @@ Mapping from Pi theme tokens to this document. `themes/pina-dark.json` mirrors t
 | `bashMode` | `green` |
 | `export.pageBg` / `export.cardBg` / `export.infoBg` | `surface-0` / `surface-1` / `surface-2` |
 
+## Editor treatment (extension)
+
+`extensions/pina-editor.ts` applies the panel language to the input editor.
+The theme JSON cannot express structure, so the extension reads live theme
+tokens and owns three structural rules:
+
+- Left bar `▌` colored through the editor border color (follows bash mode).
+- Panel background `surface-2` (`selectedBg`) on every row.
+- 2-column inner padding, one blank panel row above and below. The horizontal
+  rules are suppressed unless they carry information (working status, scroll
+  indicator).
+
 ## Light mode rules (planned)
 
 - Keep `gold #ffd859` as the accent but verify ≥ 3:1 against light surfaces; if it fails, darken
