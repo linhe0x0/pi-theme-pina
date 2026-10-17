@@ -88,18 +88,21 @@ export class PinaFooter {
 		const theme = ctx.ui.theme;
 		const lines: string[] = [];
 
-		// Line 1: cwd, git branch, session name.
+		// One line: path (cwd, git branch, session name) on the left, token stats
+		// right-aligned on the same row. The model segment lives in PinaEditor's
+		// status row.
 		let pwd = formatCwdForFooter(ctx.sessionManager.getCwd());
 		const branch = this.footerData.getGitBranch();
 		if (branch) pwd += ` (${branch})`;
 		const sessionName = ctx.sessionManager.getSessionName();
 		if (sessionName) pwd += ` • ${sessionName}`;
-		lines.push(truncateToWidth(theme.fg("dim", pwd), width, theme.fg("dim", "...")));
+		const stats = this.statsLine(ctx, theme);
+		// Shrink the path first; the stats keep their context-percentage colors.
+		const path = truncateToWidth(theme.fg("dim", pwd), Math.max(0, width - visibleWidth(stats) - 1), theme.fg("dim", "..."));
+		const gap = " ".repeat(Math.max(1, width - visibleWidth(stats) - visibleWidth(path)));
+		lines.push(truncateToWidth(path + gap + stats, width, "..."));
 
-		// Line 2: token stats. The model segment lives in PinaEditor's status row.
-		lines.push(truncateToWidth(this.statsLine(ctx, theme), width, "..."));
-
-		// Line 3: extension statuses on a single line, sorted by key alphabetically.
+		// Extension statuses on a single line, sorted by key alphabetically.
 		const statuses = this.footerData.getExtensionStatuses();
 		if (statuses.size > 0) {
 			const statusLine = Array.from(statuses.entries())
