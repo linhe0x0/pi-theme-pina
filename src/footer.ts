@@ -121,6 +121,8 @@ export class PinaFooter {
         .join(' ')
       lines.push(truncateToWidth(statusLine, width, theme.fg('dim', '...')))
     }
+    // Trailing blank line as bottom padding.
+    lines.push('')
     return lines
   }
 
