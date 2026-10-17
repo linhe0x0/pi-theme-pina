@@ -36,6 +36,7 @@ Where color words are allowed to live. Most members are syntax hues.
 | `black` | `#000000` | 1.1        | Deep dark anchor. No consumer yet.                                         |
 | `blue`  | `#79a8ff` | 8          | Syntax keyword hue; links. Shares the cool hue family of the neutral ramp. |
 | `teal`  | `#63cfc9` | 10.2       | Syntax type hue. Keeps syntax at six hues with no amber collision.         |
+| `green` | `#52ce63` | 9.4        | Green accent. No consumer yet.                                             |
 
 ## Text hierarchy
 
@@ -44,13 +45,13 @@ Four steps of emphasis, brightest first. A token's name is its rank, not its col
 | Token              | Hex        | Contrast                            | Usage                                                                                                                                                                          |
 | ------------------ | ---------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `text-white`       | `$white`   | 19 on base                          | User input — the brightest text in the system.                                                                                                                                 |
-| `text-primary`     | `#e8ebf1`  | 15.9 on base, 7.7 on accent         | Default body: assistant prose, tool titles, markdown headings.                                                                                                                 |
+| `text-primary`     | `#e8ebf1`  | 15.9 on base, 7.7 on accent         | Default body: assistant prose, markdown headings.                                                                                                                              |
 | `text-secondary`   | `#b0b9c5`  | 9.6 base, 6.1 secondary, 4.7 accent | Supporting information: tool output, link URLs, diff context, syntax functions and code variables; faint borders (code block border).                                          |
 | `text-tertiary`    | `#4b5563`  | 2.5 base, 1.6 secondary             | Faintest annotations: code comments, strings and numbers, operators and punctuation, thinking block text, markdown quotes and list bullets, horizontal rules. Never body copy. |
 | `text-emphasis`    | `$primary` | 13.8 on base                        | Gold emphasis text on dark surfaces.                                                                                                                                           |
 | `text-on-emphasis` | `#101010`  | 13.8 on gold                        | Text on emphasis surfaces: agent-injected panel text and labels, search-match text.                                                                                            |
 | `text-link`        | `$blue`    | 8 on base                           | Hyperlink text.                                                                                                                                                                |
-| `text-success`     | `#00c27b`  | 8.2 on base                         | Success, diff additions, code block content, bash mode border.                                                                                                                 |
+| `text-success`     | `#089c65`  | 5.4 on base                         | Success, tool titles, diff additions, code block content, bash mode border.                                                                                                    |
 | `text-danger`      | `#f1626a`  | 6.1 base, 5.7 on bg-danger          | Errors, diff removals. 5.7:1 on `bg-danger`.                                                                                                                                   |
 | `text-warning`     | `#ffd600`  | 13.5 on base                        | Warnings. Hue-shifted from `primary` (~32° vs ~48°) so the two never read as the same color.                                                                                   |
 
