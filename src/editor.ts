@@ -22,15 +22,18 @@
  *   segment re-ordered to "model (provider) • level" — model name in
  *   userMessageText (#fff), provider parens and thinking level dim. The
  *   matching footer lives in src/footer.ts.
- * - One blank panel row between the status row and the panel's bottom edge.
+ * - A half-height bottom edge row after the status row: ▀ paints the panel
+ *   color on the upper half of the cell only, halving the visual padding under
+ *   the status row; the bar column caps with ▘ to match.
  */
 import { CustomEditor, type ExtensionContext, type KeybindingsManager, type Theme } from "@earendil-works/pi-coding-agent";
 import { stripTerminalSequences, truncateToWidth, visibleWidth, type TUI, type TuiMouseEvent } from "@earendil-works/pi-tui";
 
 const PAD_X = 1;
 const PAD_Y = 0;
-const STATUS_PAD_Y = 1;
 const BAR = "▌";
+const BAR_CAP = "▘";
+const HALF_BLOCK = "▀";
 const RESET_FG = "\x1b[39m";
 
 class PinaEditor extends CustomEditor {
@@ -128,8 +131,10 @@ class PinaEditor extends CustomEditor {
 			out.push(bar + panel(textFg + line + RESET_FG + pad));
 		}
 		out.push(bar + panel(this.statusLine(inner)));
-		for (let i = 0; i < STATUS_PAD_Y; i++) out.push(bar + blank);
-		for (let i = 0; i < PAD_Y; i++) out.push(bar + blank);
+		// Bottom edge: paint only the upper half of the cell so the padding under
+		// the status row visually shrinks to half a line.
+		const cap = this.isBashBorder() ? theme.fg("bashMode", BAR_CAP) : theme.fg("accent", BAR_CAP);
+		out.push(cap + theme.style(HALF_BLOCK.repeat(inner), { fg: theme.colors.userMessageBg }));
 		return out;
 	}
 
