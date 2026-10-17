@@ -4,24 +4,31 @@
  * minus the model segment, which the editor pins inside its panel), and message
  * rendering as it lands. Each concern lives in its own src/ module.
  */
-import type { ExtensionAPI } from '@earendil-works/pi-coding-agent'
+import type {
+  ExtensionAPI,
+  ExtensionContext,
+} from '@earendil-works/pi-coding-agent'
 import { PinaEditor } from '../src/editor.ts'
 import { PinaFooter } from '../src/footer.ts'
 import { thinkingQuote } from '../src/thinking-quote.ts'
+import { installUserMessageBorder } from '../src/user-message-border.ts'
 
 export default function (pi: ExtensionAPI) {
+  let ctx: ExtensionContext | undefined
+  installUserMessageBorder(() => ctx)
   pi.registerMarkdownTransformer(thinkingQuote)
-  pi.on('session_start', (_event, ctx) => {
-    if (ctx.mode !== 'tui') return
-    ctx.ui.setEditorComponent(
+  pi.on('session_start', (_event, context) => {
+    ctx = context
+    if (context.mode !== 'tui') return
+    context.ui.setEditorComponent(
       (tui, theme, keybindings) =>
-        new PinaEditor(tui, theme, keybindings, () => ctx),
+        new PinaEditor(tui, theme, keybindings, () => context),
     )
-    ctx.ui.setFooter(
+    context.ui.setFooter(
       (tui, _theme, footerData) =>
         new PinaFooter(
           tui,
-          () => ctx,
+          () => context,
           footerData,
           () => pi.getSettings(),
         ),
