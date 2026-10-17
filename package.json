@@ -27,6 +27,10 @@
   },
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10"
   }
 }

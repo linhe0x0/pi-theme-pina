@@ -21,10 +21,10 @@ A platform-agnostic color system for AI coding agent TUIs. Three artifacts, one 
 
 The emotional axis of the UI. Scene colors carry hex values; role names survive re-theming.
 
-| Token            | Hex       | vs bg-base | Usage                                                                                                                                                         |
-| ---------------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `primary`        | `#ffd859` | 13.8       | Brand accent: logo, cursor, inline code (via `text-emphasis`). Also the emphasis surface and search-match chip color (via `bg-emphasis`).                     |
-| `primary-accent` | `#8f762f` | 4.3        | Quiet primary for persistent accents: focused borders, meta badges. The hover-darkened step of `primary`.                                                     |
+| Token            | Hex       | vs bg-base | Usage                                                                                                                                     |
+| ---------------- | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `primary`        | `#ffd859` | 13.8       | Brand accent: logo, cursor, inline code (via `text-emphasis`). Also the emphasis surface and search-match chip color (via `bg-emphasis`). |
+| `primary-accent` | `#8f762f` | 4.3        | Quiet primary for persistent accents: focused borders, meta badges. The hover-darkened step of `primary`.                                 |
 
 ## Palette
 
@@ -34,25 +34,25 @@ Where color words are allowed to live. Most members are syntax hues.
 | ------- | --------- | ---------- | -------------------------------------------------------------------------- |
 | `white` | `#ffffff` | 19         | Pure anchor; target of `text-white`.                                       |
 | `black` | `#000000` | 1.1        | Deep dark anchor. No consumer yet.                                         |
-| `blue`  | `#79a8ff` | 8          | Syntax keyword hue; links. Shares the cool hue family of the neutral ramp.                        |
+| `blue`  | `#79a8ff` | 8          | Syntax keyword hue; links. Shares the cool hue family of the neutral ramp. |
 | `teal`  | `#63cfc9` | 10.2       | Syntax type hue. Keeps syntax at six hues with no amber collision.         |
 
 ## Text hierarchy
 
 Four steps of emphasis, brightest first. A token's name is its rank, not its color.
 
-| Token              | Hex        | Contrast                            | Usage                                                                                                                              |
-| ------------------ | ---------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `text-white`       | `$white`   | 19 on base                          | User input — the brightest text in the system.                                                                                     |
-| `text-primary`     | `#e8ebf1`  | 15.9 on base, 7.7 on accent         | Default body: assistant prose, tool titles, markdown headings.                                                                     |
-| `text-secondary`   | `#b0b9c5`  | 9.6 base, 6.1 secondary, 4.7 accent | Supporting information: tool output, link URLs, diff context, syntax functions and code variables; faint borders (code block border). |
+| Token              | Hex        | Contrast                            | Usage                                                                                                                                                                          |
+| ------------------ | ---------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `text-white`       | `$white`   | 19 on base                          | User input — the brightest text in the system.                                                                                                                                 |
+| `text-primary`     | `#e8ebf1`  | 15.9 on base, 7.7 on accent         | Default body: assistant prose, tool titles, markdown headings.                                                                                                                 |
+| `text-secondary`   | `#b0b9c5`  | 9.6 base, 6.1 secondary, 4.7 accent | Supporting information: tool output, link URLs, diff context, syntax functions and code variables; faint borders (code block border).                                          |
 | `text-tertiary`    | `#4b5563`  | 2.5 base, 1.6 secondary             | Faintest annotations: code comments, strings and numbers, operators and punctuation, thinking block text, markdown quotes and list bullets, horizontal rules. Never body copy. |
-| `text-emphasis`    | `$primary` | 13.8 on base                        | Gold emphasis text on dark surfaces.                                                                                               |
-| `text-on-emphasis` | `#101010`  | 13.8 on gold                        | Text on emphasis surfaces: agent-injected panel text and labels, search-match text.                                                |
-| `text-link`        | `$blue`    | 8 on base                           | Hyperlink text.                                                                                                                    |
-| `text-success`     | `#00c27b`  | 8.2 on base                         | Success, diff additions, code block content, bash mode border.                                                                     |
-| `text-danger`      | `#f1626a`  | 6.1 base, 5.7 on bg-danger          | Errors, diff removals. 5.7:1 on `bg-danger`.                                                                                       |
-| `text-warning`     | `#ffd600`  | 13.5 on base                        | Warnings. Hue-shifted from `primary` (~32° vs ~48°) so the two never read as the same color.                                       |
+| `text-emphasis`    | `$primary` | 13.8 on base                        | Gold emphasis text on dark surfaces.                                                                                                                                           |
+| `text-on-emphasis` | `#101010`  | 13.8 on gold                        | Text on emphasis surfaces: agent-injected panel text and labels, search-match text.                                                                                            |
+| `text-link`        | `$blue`    | 8 on base                           | Hyperlink text.                                                                                                                                                                |
+| `text-success`     | `#00c27b`  | 8.2 on base                         | Success, diff additions, code block content, bash mode border.                                                                                                                 |
+| `text-danger`      | `#f1626a`  | 6.1 base, 5.7 on bg-danger          | Errors, diff removals. 5.7:1 on `bg-danger`.                                                                                                                                   |
+| `text-warning`     | `#ffd600`  | 13.5 on base                        | Warnings. Hue-shifted from `primary` (~32° vs ~48°) so the two never read as the same color.                                                                                   |
 
 ## Backgrounds
 
@@ -72,11 +72,11 @@ Elevation ladder above the canvas. Every level is a documented contrast step.
 
 ## Chrome
 
-| Token              | Hex               | vs bg-base | Notes                         |
-| ------------------ | ----------------- | ---------- | ----------------------------- |
-| `border-base`      | `#3f4550`         | 2          | Normal borders.               |
+| Token              | Hex               | vs bg-base | Notes                               |
+| ------------------ | ----------------- | ---------- | ----------------------------------- |
+| `border-base`      | `#3f4550`         | 2          | Normal borders.                     |
 | `border-secondary` | `#30363e`         | 1.6        | Subtle separators; scrollbar track. |
-| `border-accent`    | `$primary-accent` | 4.3        | Focused borders, meta badges. |
+| `border-accent`    | `$primary-accent` | 4.3        | Focused borders, meta badges.       |
 
 ## Cognition ramp
 
