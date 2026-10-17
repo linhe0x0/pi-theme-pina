@@ -1,96 +1,102 @@
-# Piña Design Tokens
+# Piña Design System
 
-Source of truth for every color in Piña. `themes/*.json` implements these values and must not
-drift from this document.
+A platform-agnostic color system for AI coding agent TUIs. Three artifacts, one derivation rule:
 
-Contrast ratios are measured against a representative dark terminal background, `BASE #1e2126`.
-Body text keeps ≥ 4.5:1 (WCAG AA) on the surface it renders on.
+- **`DESIGN.md`** (this file) — the spec: principles, tokens, usage.
+- **`tokens.json`** — the machine-readable source of every hex value.
 
-## Surfaces
+## Principles
 
-| Token | Hex | vs BASE | Usage |
-| --- | --- | --- | --- |
-| `surface-0` | `#22252b` | 1.05 | Shadow level. Only where the terminal background cannot be used: HTML export page background. |
-| `surface-1` | `#32363f` | 1.33 | Level 1 — resting panels: tool execution boxes (pending, success). |
-| `surface-2` | `#414853` | 1.75 | Level 2 — interactive surfaces: user messages, selected items, export info panels. |
-| `surface-3` | `#515c67` | 2.37 | Level 3 — highest emphasis: custom (system-injected) message panels, scrollbar thumb. |
-| `surface-error` | `#45343a` | 1.39 | Signal surface. Tool execution boxes in error state only (desaturated red, same lightness as Level 1). |
-| `surface-gold` | `#4a4331` | 1.6 | Gold-tinted search-match background, so find-results are scannable outside the neutral ramp. |
+- **Contrast floor.** Body text keeps ≥ 4.5:1 (WCAG AA) on the surface it renders on. Ratios are
+  measured against the dark canvas, `bg-base #101010`.
+- **Hue budget.** Syntax spends at most six hues. The brand hue (`primary`, gold family) and the
+  alarm hue (`danger`, red family) never collide.
+- **Alarm exclusivity.** `danger` is reserved for errors. It never decorates.
+- **Naming grammar.** Scene colors are role-named (`primary`, `success`), never hue-named. `text-*`
+  encodes text hierarchy, never "a scene color applied to text". `bg-*` encodes elevation above
+  the canvas. Role aliases (`bg-emphasis`, `text-emphasis`) point at scene colors, so consumers
+  prefer the role name.
 
-## Text
+## Scene colors
 
-| Token | Hex | Contrast | Usage |
-| --- | --- | --- | --- |
-| `text` | `#e8ebf1` | 13.5 on BASE, 7.7 on L2 | Primary text, user messages, tool titles. |
-| `muted` | `#b0b9c5` | 8.1 on BASE, 6.1 on L1, 4.7 on L2 | Secondary text: tool output, link URLs, diff context. |
-| `dim` | `#79828f` | 4.2 on BASE, 3.1 on L1 | Tertiary text: comments, horizontal rules, quote borders. Never for body copy. |
-| `text-on-l3` | `#d8dee6` | 5.0 on L3 | Text on Level 3 panels (custom messages), where `muted` would drop below 4.5:1. |
+The emotional axis of the UI. Scene colors carry hex values; role names survive re-theming.
 
-## Accent and semantic colors
+| Token            | Hex       | vs bg-base | Usage                                                                                                                                                         |
+| ---------------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `primary`        | `#ffd859` | 13.8       | Brand accent: logo, cursor, headings, inline code, list bullets; syntax functions. Also the emphasis surface and search-match chip color (via `bg-emphasis`). |
+| `primary-accent` | `#8f762f` | 4.3        | Quiet primary for persistent accents: focused borders, meta badges. The hover-darkened step of `primary`.                                                     |
 
-| Token | Hex | Contrast on BASE | Usage |
-| --- | --- | --- | --- |
-| `gold` (accent) | `#ffd859` | 11.7 | Brand accent: logo, cursor, headings, inline code, list bullets, custom message labels, selected-item highlights. |
-| `gold-deep` | `#8f762f` | 3.7 | Accent borders (focused editor). |
-| `green` | `#86d993` | 9.5 | Success, diff additions, code block content, bash mode border. |
-| `red` | `#ff8d8d` | 7.3 | Errors, diff removals. 5.2:1 on `surface-error`. |
-| `orange` | `#f5a95a` | 8.2 | Warnings and number literals. Hue-shifted from `gold` (~32° vs ~48°) so the two never read as the same color. |
-| `blue` | `#79a8ff` | 6.8 | Links, keywords. Shares the cool hue family of the neutral ramp. |
-| `teal` | `#63cfc9` | 8.7 | Type names. Keeps syntax at six hues with no amber collision. |
+## Palette
 
-## Syntax highlighting
+Where color words are allowed to live. Most members are syntax hues.
 
-| Token | Value |
-| --- | --- |
-| `syntaxComment` | `dim` |
-| `syntaxKeyword` | `blue` |
-| `syntaxFunction` | `gold` |
-| `syntaxVariable` | `text` |
-| `syntaxString` | `green` |
-| `syntaxNumber` | `orange` |
-| `syntaxType` | `teal` |
-| `syntaxOperator` | `muted` |
-| `syntaxPunctuation` | `muted` |
+| Token   | Hex       | vs bg-base | Usage                                                                      |
+| ------- | --------- | ---------- | -------------------------------------------------------------------------- |
+| `white` | `#ffffff` | 19         | Pure anchor; target of `text-white`.                                       |
+| `black` | `#000000` | 1.1        | Deep dark anchor. No consumer yet.                                         |
+| `blue`  | `#79a8ff` | 8          | Syntax keyword hue; links. Shares the cool hue family of the neutral ramp. |
+| `teal`  | `#63cfc9` | 10.2       | Syntax type hue. Keeps syntax at six hues with no amber collision.         |
 
-## Thinking level ramp
+## Text hierarchy
 
-`off #566070` → `minimal #6e829c` → `low #6f9be0` → `medium #9d8cf2` → `high #c98ef2` →
-`xhigh #f18fd2` → `max #ff8f6b`
+Four steps of emphasis, brightest first. A token's name is its rank, not its color.
+
+| Token              | Hex        | Contrast                            | Usage                                                                                                                              |
+| ------------------ | ---------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `text-white`       | `$white`   | 19 on base                          | User input — the brightest text in the system.                                                                                     |
+| `text-primary`     | `#e8ebf1`  | 15.9 on base, 7.7 on accent         | Default body: assistant prose, tool titles, code variables.                                                                        |
+| `text-secondary`   | `#b0b9c5`  | 9.6 base, 6.1 secondary, 4.7 accent | Supporting information: tool output, link URLs, diff context, syntax operators and punctuation; faint borders (code block border). |
+| `text-tertiary`    | `#4b5563`  | 2.5 base, 1.6 secondary             | Faintest annotations: code comments, thinking block text, horizontal rules, quote borders. Never body copy.                        |
+| `text-emphasis`    | `$primary` | 13.8 on base                        | Gold emphasis text on dark surfaces.                                                                                               |
+| `text-on-emphasis` | `#101010`  | 13.8 on gold                        | Text on emphasis surfaces: agent-injected panel text and labels, search-match text.                                                |
+| `text-link`        | `$blue`    | 8 on base                           | Hyperlink text.                                                                                                                    |
+| `text-success`     | `#00c27b`  | 8.2 on base                         | Success, diff additions, code block content, bash mode border.                                                                     |
+| `text-danger`      | `#f1626a`  | 6.1 base, 5.7 on bg-danger          | Errors, diff removals. 5.7:1 on `bg-danger`.                                                                                       |
+| `text-warning`     | `#ffd600`  | 13.5 on base                        | Warnings. Hue-shifted from `primary` (~32° vs ~48°) so the two never read as the same color.                                       |
+
+## Backgrounds
+
+Elevation ladder above the canvas. Every level is a documented contrast step.
+
+| Token          | Hex        | vs bg-base | Usage                                                                               |
+| -------------- | ---------- | ---------- | ----------------------------------------------------------------------------------- |
+| `bg-base`      | `#101010`  | —          | The terminal canvas. Baseline for every ratio; user messages render directly on it. |
+| `bg-primary`   | `#1e2126`  | 1.2        | Standard panel surface above the canvas: editor input area, user messages.          |
+| `bg-secondary` | `#32363f`  | 1.6        | Resting panels: tool execution boxes (pending, success); export cards.              |
+| `bg-emphasis`  | `$primary` | 13.8       | Emphasis surfaces: agent-injected message panels, search-match chips.               |
+| `bg-accent`    | `#414853`  | 2.1        | Interactive surfaces: export info panels.                                           |
+| `bg-success`   | `#00270f`  | 1.2        | Success-tinted surface: tool execution boxes in success state.                      |
+| `bg-danger`    | `#360309`  | 1.1        | Error-tinted surface: tool execution boxes in error state.                          |
+| `bg-warning`   | `#442e00`  | 1.5        | Warning-tinted surface.                                                             |
 
 ## Chrome
 
-| Token | Hex | Notes |
-| --- | --- | --- |
-| `border` | `#3f4550` | 1.7 vs BASE. Normal borders. |
-| `borderMuted` | `#30363e` | 1.3 vs BASE. Subtle separators. |
-| `borderAccent` | `gold-deep` | 3.7 vs BASE. Focused borders. |
-| `scrollbarTrack` | `#262a31` | 1.1 vs BASE. A groove, not a stripe. |
-| `scrollbarThumb` | `surface-3` | 2.1 vs track. |
-| `searchMatchBg` | `surface-gold` | 1.6 vs BASE. The current match inverts (`searchMatchText #e8ebf1` as background, `searchMatchBg` as text, 8.2:1). |
+| Token              | Hex               | vs bg-base | Notes                         |
+| ------------------ | ----------------- | ---------- | ----------------------------- |
+| `border-base`      | `#3f4550`         | 2          | Normal borders.               |
+| `border-secondary` | `#30363e`         | 1.6        | Subtle separators.            |
+| `border-accent`    | `$primary-accent` | 4.3        | Focused borders, meta badges. |
 
-## Theme token map
+## Cognition ramp
 
-Mapping from Pi theme tokens to this document. `themes/pina-dark.json` mirrors this table.
+AI reasoning intensity, faintest to hottest. Platform concepts map onto the seven steps (pi's
+thinking levels Off→Max are `cognition-0`…`cognition-6`).
 
-| Pi token | Value |
-| --- | --- |
-| `accent` | `gold` |
-| `border` / `borderMuted` / `borderAccent` | `#3f4550` / `#30363e` / `gold-deep` |
-| `success` / `error` / `warning` | `green` / `red` / `orange` |
-| `text` / `muted` / `dim` | `text` / `muted` / `dim` |
-| `thinkingText` | `muted` |
-| `selectedBg` | `surface-2` |
-| `scrollbarTrack` / `scrollbarThumb` | `#262a31` / `surface-3` |
-| `searchMatchBg` / `searchMatchText` | `surface-gold` / `text` |
-| `userMessageBg` / `userMessageText` | `surface-2` / `text` |
-| `customMessageBg` / `customMessageText` / `customMessageLabel` | `surface-3` / `text-on-l3` / `gold` |
-| `toolPendingBg` / `toolSuccessBg` | `surface-1` / `surface-1` |
-| `toolErrorBg` | `surface-error` |
-| `toolTitle` / `toolOutput` | `text` / `muted` |
-| `mdHeading` / `mdListBullet` | `gold` |
-| `mdLink` / `mdLinkUrl` | `blue` / `muted` |
-| `mdCode` / `mdCodeBlock` / `mdCodeBlockBorder` | `gold` / `green` / `muted` |
-| `mdQuote` / `mdQuoteBorder` / `mdHr` | `muted` / `dim` / `dim` |
-| `toolDiffAdded` / `toolDiffRemoved` / `toolDiffContext` | `green` / `red` / `muted` |
-| `bashMode` | `green` |
-| `export.pageBg` / `export.cardBg` / `export.infoBg` | `surface-0` / `surface-1` / `surface-2` |
+`cognition-0 #566070` → `1 #6e829c` → `2 #6f9be0` → `3 #9d8cf2` → `4 #c98ef2` → `5 #f18fd2` →
+`6 #ff8f6b`
+
+## Syntax roles
+
+How the six-hue budget is spent. Role names are platform-agnostic; adapters translate them
+(pi's `syntax*` keys, nvim's `@` groups, Zed's syntax styles).
+
+| Role                  | Token             |
+| --------------------- | ----------------- |
+| comment               | `$text-tertiary`  |
+| keyword               | `$blue`           |
+| function              | `$primary`        |
+| variable              | `$text-primary`   |
+| string                | `$text-secondary` |
+| number                | `$text-secondary` |
+| type                  | `$teal`           |
+| operator, punctuation | `$text-secondary` |
