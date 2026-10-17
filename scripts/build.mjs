@@ -47,7 +47,7 @@ for (const file of (await readdir(themesDir)).filter((f) =>
       ordered[key] = key === 'vars' ? vars : value
     }
     if (!hasVars) ordered.vars = vars
-    const content = JSON.stringify(ordered, null, '\t') + '\n'
+    const content = JSON.stringify(ordered, null, 2) + '\n'
     const current = await readFile(out, 'utf8')
     if (current === content) {
       console.log(`OK   ${file}`)

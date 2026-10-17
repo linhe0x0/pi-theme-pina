@@ -6,6 +6,7 @@ help: ## Show available targets
 
 build: ## Sync vars in themes/*.json with tokens.json
 	node scripts/build.mjs
+	npx prettier --write ./themes/
 
 validate: ## Validate themes/*.json: schema, core consistency, vars freshness
 	node scripts/validate.mjs
