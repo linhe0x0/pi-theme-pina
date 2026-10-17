@@ -1,14 +1,17 @@
 /**
  * Footer replacement that mirrors pi's built-in FooterComponent minus the model
  * segment: PinaEditor renders "(provider) model • level" inside the input panel
- * instead, so the built-in footer would show the same string twice. Everything
- * else follows FooterComponent.render (pi's
+ * instead, so the built-in footer would show the same string twice. The rest
+ * follows FooterComponent.render (pi's
  * dist/modes/interactive/components/footer.js): cwd + git branch + session
- * name, token stats with context percentage, and extension statuses.
+ * name and extension statuses.
+ *
+ * Intentional divergence: token stats are simplified to
+ * "input+output (context%)" with pi's context-percentage coloring.
  *
  * Dropped rather than faked — pi does not export these from the extension API:
- * - "(sub)": pi also checks an internal OAuth subscription flag on the model
- *   runtime; only its kimi-coding special case is reproduced here.
+ * - "(sub)": pi checks an internal OAuth subscription flag on the model
+ *   runtime; extensions cannot see it.
  * - " • xp": the experimental-features check is not exported.
  * - The routed virtual-model suffix, like in the editor's segment.
  */
@@ -19,9 +22,6 @@ import type {
   Theme,
 } from '@earendil-works/pi-coding-agent'
 import { truncateToWidth, visibleWidth, type TUI } from '@earendil-works/pi-tui'
-
-/** Structural subset of pi's effective settings; pi.getSettings() satisfies it. */
-type SettingsAccessor = () => { compaction?: { enabled?: boolean } | undefined }
 
 function formatTokens(count: number): string {
   if (count < 1000) return count.toString()
@@ -53,23 +53,18 @@ function sanitizeStatusText(text: string): string {
     .trim()
 }
 
-/** Cumulative usage of the session branch, cached the same way FooterComponent caches its scan. */
+/** Cumulative input/output of the session branch, cached like FooterComponent caches its scan. */
 type SessionStats = {
   sessionId: string
   leafId: string
   entryCount: number
   input: number
   output: number
-  cacheRead: number
-  cacheWrite: number
-  cost: number
-  cacheHitRate: number | undefined
 }
 
 export class PinaFooter {
   private readonly footerData: ReadonlyFooterDataProvider
   private readonly getCtx: () => ExtensionContext
-  private readonly getSettings: SettingsAccessor
   private readonly tui: TUI
   private readonly unsub: () => void
   private stats: SessionStats | undefined
@@ -78,12 +73,10 @@ export class PinaFooter {
     tui: TUI,
     getCtx: () => ExtensionContext,
     footerData: ReadonlyFooterDataProvider,
-    getSettings: SettingsAccessor,
   ) {
     this.tui = tui
     this.getCtx = getCtx
     this.footerData = footerData
-    this.getSettings = getSettings
     // The branch appears and disappears without keystrokes or events.
     this.unsub = footerData.onBranchChange(() => tui.requestRender())
   }
@@ -134,44 +127,21 @@ export class PinaFooter {
   private statsLine(ctx: ExtensionContext, theme: Theme): string {
     const stats = this.sessionStats(ctx)
     const parts: string[] = []
-    if (stats.input) parts.push(`↑${formatTokens(stats.input)}`)
-    if (stats.output) parts.push(`↓${formatTokens(stats.output)}`)
-    if (stats.cacheRead) parts.push(`R${formatTokens(stats.cacheRead)}`)
-    if (stats.cacheWrite) parts.push(`W${formatTokens(stats.cacheWrite)}`)
-    if (
-      (stats.cacheRead > 0 || stats.cacheWrite > 0) &&
-      stats.cacheHitRate !== undefined
-    ) {
-      parts.push(`CH${stats.cacheHitRate.toFixed(1)}%`)
-    }
-    const model = ctx.model
-    // pi also enables this for OAuth subscription providers via the model runtime,
-    // which extensions cannot see; the kimi-coding case is reproducible.
-    const usingSubscription = model?.provider === 'kimi-coding'
-    if (stats.cost || usingSubscription) {
-      parts.push(
-        `$${stats.cost.toFixed(3)}${usingSubscription ? ' (sub)' : ''}`,
-      )
-    }
+    const total = stats.input + stats.output
+    if (total) parts.push(formatTokens(total))
 
     // Context percentage, colored by usage like the built-in footer.
-    const usage = ctx.getContextUsage()
-    const contextWindow = usage?.contextWindow ?? model?.contextWindow ?? 0
-    const percentValue = usage?.percent ?? 0
-    const autoIndicator =
-      (this.getSettings().compaction?.enabled ?? true) ? ' (auto)' : ''
-    const percent = usage?.percent !== null ? percentValue.toFixed(1) : '?'
-    const display =
-      percent === '?'
-        ? `?/${formatTokens(contextWindow)}${autoIndicator}`
-        : `${percent}%/${formatTokens(contextWindow)}${autoIndicator}`
-    parts.push(
-      percentValue > 90
-        ? theme.fg('error', display)
-        : percentValue > 70
-          ? theme.fg('warning', display)
-          : display,
-    )
+    const percent = ctx.getContextUsage()?.percent
+    if (percent !== null && percent !== undefined) {
+      const display = `(${Math.round(percent)}%)`
+      parts.push(
+        percent > 90
+          ? theme.fg('error', display)
+          : percent > 70
+            ? theme.fg('warning', display)
+            : display,
+      )
+    }
 
     // The context segment embeds its own color and reset, which would end a
     // whole-line dim wrap; nothing uncolored follows it, so one dim wrap matches.
@@ -198,10 +168,6 @@ export class PinaFooter {
       entryCount: entries.length,
       input: 0,
       output: 0,
-      cacheRead: 0,
-      cacheWrite: 0,
-      cost: 0,
-      cacheHitRate: undefined,
     }
     for (const entry of entries) {
       if (entry.type === 'usage') {
@@ -211,14 +177,6 @@ export class PinaFooter {
         entry.message.role === 'assistant'
       ) {
         addUsage(stats, entry.message.usage)
-        const promptTokens =
-          entry.message.usage.input +
-          entry.message.usage.cacheRead +
-          entry.message.usage.cacheWrite
-        stats.cacheHitRate =
-          promptTokens > 0
-            ? (entry.message.usage.cacheRead / promptTokens) * 100
-            : undefined
       } else if (
         entry.type === 'message' &&
         entry.message.role === 'toolResult' &&
@@ -239,17 +197,8 @@ export class PinaFooter {
 
 function addUsage(
   stats: SessionStats,
-  usage: {
-    input: number
-    output: number
-    cacheRead: number
-    cacheWrite: number
-    cost: { total: number }
-  },
+  usage: { input: number; output: number },
 ): void {
   stats.input += usage.input
   stats.output += usage.output
-  stats.cacheRead += usage.cacheRead
-  stats.cacheWrite += usage.cacheWrite
-  stats.cost += usage.cost.total
 }

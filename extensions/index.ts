@@ -26,12 +26,7 @@ export default function (pi: ExtensionAPI) {
     )
     context.ui.setFooter(
       (tui, _theme, footerData) =>
-        new PinaFooter(
-          tui,
-          () => context,
-          footerData,
-          () => pi.getSettings(),
-        ),
+        new PinaFooter(tui, () => context, footerData),
     )
   })
 }
